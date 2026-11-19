@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Node / build
+node_modules/
+dist/
+.vite/
+
+# Secrets / local config
+.env
+.env.local
+
+# Live app data (your resume, jobs, vectors) — stays local, not versioned
+backend/data/
+
+# Leftover duplicate Vite scaffold (unused)
+frontend/frontend/
+
+# OS / editor / logs
+.DS_Store
+Thumbs.db
+*.log

@@ -1,0 +1,37 @@
+Eshwar Kumar
+AI Engineer
+eshwar.kumar@example.com | +91 9876543210 | Bengaluru, India
+
+SUMMARY
+AI Engineer with 1 year 2 months of experience building production LLM applications,
+RAG pipelines and multi-agent systems. Strong in Python, LangChain, LangGraph and
+HuggingFace transformers. Looking for AI/ML engineering roles.
+
+EXPERIENCE
+AI Engineer — TechNova Solutions, Bengaluru
+Jun 2024 - Present
+- Built a RAG-based document QA system using LangChain, ChromaDB and sentence-transformers, serving 2k queries/day
+- Developed multi-agent workflows with LangGraph and MCP tool integrations
+- Fine-tuned Llama-3-8B with LoRA/QLoRA on domain data, improving answer accuracy by 18%
+- Deployed models with FastAPI, Docker and AWS EC2; set up MLflow tracking
+- Integrated HuggingFace Inference API and Ollama local SLMs for cost optimization
+
+Machine Learning Intern — DataWorks Analytics
+Jan 2024 - May 2024
+- Built NLP classification models with PyTorch and scikit-learn
+- Created data pipelines with pandas and Airflow
+
+SKILLS
+Python, SQL, Machine Learning, Deep Learning, NLP, LLM, GenAI, LangChain, LangGraph,
+RAG, HuggingFace, PyTorch, TensorFlow, scikit-learn, pandas, numpy, FastAPI, Docker,
+AWS, MLflow, ChromaDB, FAISS, Git, Linux, REST API, prompt engineering, fine-tuning
+
+PROJECTS
+- JobFlow: multi-agent job search assistant using LangGraph, MCP and RAG
+- ResumeRank: ATS resume scorer with sentence-transformers and FastAPI
+
+EDUCATION
+B.Tech Computer Science — VTU, 2023
+
+CERTIFICATIONS
+AWS Certified Cloud Practitioner, DeepLearning.AI Generative AI with LLMs

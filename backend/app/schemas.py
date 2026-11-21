@@ -128,3 +128,21 @@ class StatsOut(BaseModel):
 
 JobOut.model_rebuild()
 ApplicationOut.model_rebuild()
+
+
+class TailorSave(BaseModel):
+    content: str
+
+
+class TailoredResumeOut(BaseModel):
+    id: int
+    job_id: int
+    content: str
+    base_ats_score: float
+    ats_score: float
+    keywords_added: list[str]
+    gaps: dict
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {"from_attributes": True}

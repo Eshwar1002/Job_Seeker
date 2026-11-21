@@ -128,3 +128,55 @@ export const SOURCE_LABELS: Record<string, string> = {
   hirist: 'Hirist',
   wellfound: 'Wellfound',
 };
+
+export interface AtsComponents {
+  keyword_match: number;
+  skills_coverage: number;
+  title_match: number;
+  section_completeness: number;
+  date_consistency: number;
+}
+
+export interface AtsResult {
+  score: number;
+  components: AtsComponents;
+  sections_found: string[];
+  missing_keywords: string[];
+  parse_warnings: string[];
+}
+
+export interface TailorGaps {
+  jd_keywords: string[];
+  present: string[];
+  add: { keyword: string; evidence: string }[];
+  learn: { keyword: string; why: string; resource: string }[];
+}
+
+export interface TailoredResume {
+  id: number;
+  job_id: number;
+  content: string;
+  base_ats_score: number;
+  ats_score: number;
+  keywords_added: string[];
+  gaps: TailorGaps;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TailorAnalysis {
+  job_id: number;
+  match_score: number;
+  min_score: number;
+  master_content: string;
+  gaps: TailorGaps;
+  base_ats: AtsResult;
+  tailored: TailoredResume | null;
+}
+
+export interface TailorDraft {
+  content: string;
+  added_keywords: string[];
+  notes: string[];
+  method: string;
+}

@@ -77,6 +77,9 @@ class Job(Base):
     application: Mapped["Application | None"] = relationship(
         back_populates="job", uselist=False, cascade="all, delete-orphan"
     )
+    tailored: Mapped["TailoredResume | None"] = relationship(
+        back_populates="job", uselist=False, cascade="all, delete-orphan"
+    )
 
 
 class Application(Base):
@@ -106,3 +109,19 @@ class SearchRun(Base):
     error: Mapped[str] = mapped_column(Text, default="")
     started_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
+class TailoredResume(Base):
+    __tablename__ = "tailored_resumes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    job_id: Mapped[int] = mapped_column(ForeignKey("jobs.id"), unique=True, index=True)
+    content: Mapped[str] = mapped_column(Text, default="")
+    base_ats_score: Mapped[float] = mapped_column(Float, default=0.0)
+    ats_score: Mapped[float] = mapped_column(Float, default=0.0)
+    keywords_added: Mapped[list] = mapped_column(JSON, default=list)
+    gaps: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
+
+    job: Mapped[Job] = relationship(back_populates="tailored")

@@ -1,6 +1,6 @@
 """Serialization helpers that avoid Job <-> Application recursion."""
-from .models import Application, Job
-from .schemas import ApplicationOut, JobOut
+from .models import Application, Job, TailoredResume
+from .schemas import ApplicationOut, JobOut, TailoredResumeOut
 
 _JOB_FIELDS = [
     "id", "source", "title", "company", "location", "is_remote", "salary",
@@ -28,3 +28,7 @@ def job_out(job: Job, include_application: bool = True) -> JobOut:
     if include_application and job.application:
         out.application = app_out(job.application)
     return out
+
+
+def tailor_out(t: TailoredResume) -> TailoredResumeOut:
+    return TailoredResumeOut.model_validate(t)

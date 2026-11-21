@@ -1,4 +1,4 @@
-import type { Application, Job, Profile, SearchRun, Stats } from './types';
+import type { Application, AtsResult, Job, Profile, SearchRun, Stats, TailorAnalysis, TailorDraft, TailoredResume } from './types';
 
 const BASE = '/api';
 
@@ -46,5 +46,12 @@ export const api = {
     req<Application>(`/applications/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
   deleteApplication: (id: number) => req<{ ok: boolean }>(`/applications/${id}`, { method: 'DELETE' }),
   getStats: () => req<Stats>('/stats'),
+  getTailor: (id: number) => req<TailorAnalysis>(`/jobs/${id}/tailor`),
+  scoreTailor: (id: number, content: string) =>
+    req<AtsResult>(`/jobs/${id}/tailor/score`, { method: 'POST', body: JSON.stringify({ content }) }),
+  draftTailor: (id: number) => req<TailorDraft>(`/jobs/${id}/tailor/draft`, { method: 'POST' }),
+  saveTailor: (id: number, content: string) =>
+    req<TailoredResume>(`/jobs/${id}/tailor`, { method: 'POST', body: JSON.stringify({ content }) }),
+  tailorExportUrl: (id: number, format: 'txt' | 'docx') => `${BASE}/jobs/${id}/tailor/export?format=${format}`,
   health: () => req<{ status: string; llm_providers: Record<string, { available: boolean; model: string }> }>('/health'),
 };

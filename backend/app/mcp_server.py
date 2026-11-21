@@ -100,6 +100,59 @@ def tracker_stats() -> str:
         return json.dumps(tracker_stats(db), default=str)
 
 
+@mcp.tool()
+def tailor_resume(job_id: int) -> str:
+    """Keyword-gap + ATS analysis for a job (only if match_score >= 75). Returns safe-to-add
+    keywords (already in your resume), true gaps to learn, and the baseline ATS score."""
+    from .agents import resume_tailor as rt
+
+    with SessionLocal() as db:
+        job = db.get(Job, job_id)
+        if not job:
+            return json.dumps({"error": "job not found"})
+        if job.match_score < rt.TAILOR_MIN_SCORE:
+            return json.dumps({"error": f"tailoring unlocks at {rt.TAILOR_MIN_SCORE:.0f}% match",
+                               "match_score": job.match_score})
+        p = get_profile(db)
+        if not p:
+            return json.dumps({"error": "No resume uploaded yet"})
+        profile = {"skills": p.skills or [], "raw_text": p.raw_text}
+        jd = {"title": job.title, "company": job.company, "skills": job.skills, "description": job.description}
+        gaps = rt.classify_gaps(profile, jd)
+        base = rt.ats_score(profile["raw_text"], jd)
+        return json.dumps({"job_id": job.id, "match_score": job.match_score,
+                           "gaps": gaps, "base_ats": base}, default=str)
+
+
+@mcp.tool()
+def save_tailored_resume(job_id: int, content: str) -> str:
+    """Save a tailored resume for a job (>=75% match) and recompute its ATS score."""
+    from .agents import resume_tailor as rt
+    from .models import TailoredResume
+    from .serializers import tailor_out
+
+    with SessionLocal() as db:
+        job = db.get(Job, job_id)
+        if not job:
+            return json.dumps({"error": "job not found"})
+        if job.match_score < rt.TAILOR_MIN_SCORE:
+            return json.dumps({"error": f"tailoring unlocks at {rt.TAILOR_MIN_SCORE:.0f}% match"})
+        p = get_profile(db)
+        jd = {"title": job.title, "company": job.company, "skills": job.skills, "description": job.description}
+        base = rt.ats_score(p.raw_text if p else "", jd)
+        cur = rt.ats_score(content, jd)
+        t = job.tailored or TailoredResume(job_id=job.id)
+        if not job.tailored:
+            db.add(t)
+        t.content = content
+        t.base_ats_score = base["score"]
+        t.ats_score = cur["score"]
+        t.keywords_added = sorted(set(base["missing_keywords"]) - set(cur["missing_keywords"]))
+        db.commit()
+        db.refresh(t)
+        return json.dumps(tailor_out(t).model_dump(mode="json"), default=str)
+
+
 if __name__ == "__main__":
     init_db()
     mcp.run()

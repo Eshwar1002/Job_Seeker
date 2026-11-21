@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .db import init_db
 from .llm import provider_status
-from .routers import applications, jobs, profile, search
+from .routers import applications, jobs, profile, search, tailor
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -31,6 +31,7 @@ app.include_router(profile.router)
 app.include_router(search.router)
 app.include_router(jobs.router)
 app.include_router(applications.router)
+app.include_router(tailor.router)
 
 
 @app.get("/api/health")

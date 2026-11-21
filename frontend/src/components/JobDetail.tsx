@@ -3,6 +3,7 @@ import { api } from '../api';
 import type { AppStatus, Job } from '../types';
 import { ROUNDS, SOURCE_LABELS, STATUS_LABELS } from '../types';
 import { ExpBadge, ScoreRing } from './JobCard';
+import ResumeTailor from './ResumeTailor';
 
 export default function JobDetail({ jobId, onClose, notify, onChanged }: {
   jobId: number;
@@ -14,6 +15,7 @@ export default function JobDetail({ jobId, onClose, notify, onChanged }: {
   const [notes, setNotes] = useState('');
   const [busy, setBusy] = useState(false);
   const [enriching, setEnriching] = useState(false);
+  const [showTailor, setShowTailor] = useState(false);
 
   useEffect(() => {
     api.getJob(jobId).then((j) => {
@@ -131,6 +133,14 @@ export default function JobDetail({ jobId, onClose, notify, onChanged }: {
         <div className="drawer-section">
           <div className="status-controls">
             <button className="btn primary" onClick={apply}>Apply on {SOURCE_LABELS[job.source] ?? job.source} ↗</button>
+            <button
+              className="btn"
+              disabled={job.match_score < 75}
+              title={job.match_score < 75 ? 'Resume tailoring unlocks at 75% match' : 'Tailor your resume to this job'}
+              onClick={() => setShowTailor(true)}
+            >
+              Tailor Resume
+            </button>
             {(!app || app.status === 'saved') && (
               <button className="btn" disabled={busy} onClick={() => setStatus('applied')}>Mark Applied</button>
             )}
@@ -237,6 +247,15 @@ export default function JobDetail({ jobId, onClose, notify, onChanged }: {
           <div className="jd-text">{job.description || 'No description captured — open the posting for full details.'}</div>
         </div>
       </div>
+      {showTailor && (
+        <ResumeTailor
+          jobId={job.id}
+          jobTitle={job.title}
+          matchScore={job.match_score}
+          onClose={() => setShowTailor(false)}
+          notify={notify}
+        />
+      )}
     </>
   );
 }
